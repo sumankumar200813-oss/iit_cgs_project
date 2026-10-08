@@ -41,16 +41,15 @@ while True:
             print("Enter your Class.")
         else:
             reqUrl = "http://127.0.0.1:8000/timetable"
-
-            headersList = {
+            headers = {
                 "Accept": "*/*",
                 "Content-Type": "application/json"
             }
 
-            payload = json.dumps(timetable)
+            data = json.dumps(timetable)
 
             response = requests.request(
-                "POST", reqUrl, data=payload,  headers=headersList)
+                "POST", reqUrl, data=data,  headers=headers)
 
             print("\nSaved in the database. ")
             timetable = []
