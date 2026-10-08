@@ -6,8 +6,7 @@ from appwrite.services.tables_db import TablesDB
 from appwrite.models import Row
 from uuid import uuid4
 from pydantic import BaseModel
-import asyncio
-from contextlib import asynccontextmanager 
+from contextlib import asynccontextmanager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sendmail import cron_jobs
 # ----------------------------------------------------------------------------
@@ -22,25 +21,26 @@ database_id: str = os.environ.get("DATABASE_ID", "")
 table_id: str = os.environ.get("TABLE_ID", "")
 
 # ----------------------------------------------------------------------------
+
 scheduler = AsyncIOScheduler(timezone="Asia/Kolkata")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-# 1. Register the jobs from the other file
+
     cron_jobs(scheduler)
 
-# 2. Start the scheduler
     scheduler.start()
     print("Scheduler started!")
 
-    yield  # The FastAPI server runs here
+    yield
 
-# 3. Shut down the scheduler when stopping the server
     scheduler.shutdown()
     print("Scheduler shut down!")
 
 # ------------------------------------------------------------------------------------
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 tables_db = TablesDB(client)
 
 
